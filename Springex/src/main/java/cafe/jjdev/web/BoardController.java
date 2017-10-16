@@ -1,9 +1,13 @@
 package cafe.jjdev.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import cafe.jjdev.web.service.Board;
 import cafe.jjdev.web.service.BoardDao;
@@ -26,4 +30,60 @@ public class BoardController {
     //  System.out.println("boardAdd 폼 요청");
         return "boardAdd";
     }
+	// 리스트 요청
+    @RequestMapping(value={"/boardList"}, method = RequestMethod.GET)
+    public String boardList(Model model
+                            , @RequestParam(value="currentPage", required=false, defaultValue="1") int currentPage) {
+    	// RequestParam으로 값을 가져온다. 만약 값을 가져올수없다면)required=false) 1로 처리한다(defaultValue="1") 인트로 변경도 해준다.
+        int boardCount = boardDao.getBoardCount();
+        int pagePerRow = 10;
+        int lastPage = (int)(Math.ceil(boardCount / pagePerRow));
+        List<Board> list = boardDao.getBoardList(currentPage, pagePerRow);
+        model.addAttribute("totalRowCount",boardCount);
+        model.addAttribute("currentPage", currentPage);  // 현재페이지 넘겨주기
+        model.addAttribute("boardCount", boardCount);	// 전체 개시판 숫자 넘겨주기
+        model.addAttribute("lastPage", lastPage);		// 라스트 페이지 넘겨주기. ( 마지막페이지에 <다음>이라는 버튼안보이게 
+        model.addAttribute("list", list);				// list내용 넘겨주기
+        return "/boardList";
+    }
+    
+    // 글 상세 내용 요청 
+    @RequestMapping(value="/boardView", method = RequestMethod.GET)
+    public String boardView(Model model
+                            , @RequestParam(value="boardNo", required=true) int boardNo) {
+        Board board = boardDao.getBoard(boardNo);
+        model.addAttribute("board", board);
+        return "/boardView";
+    }
+    
+    // 글 수정 폼 요청
+    @RequestMapping(value="/boardModify", method = RequestMethod.GET)
+    public String boardModify(Model model
+                            , @RequestParam(value="boardNo", required=true) int boardNo){
+        Board board  = boardDao.getBoard(boardNo);
+        model.addAttribute("board", board);
+        return "boardModify";
+    }
+    
+    // 글 수정 요청
+    @RequestMapping(value="/boardModify", method = RequestMethod.POST)
+    public String boardModify(Board board){
+        boardDao.updateBoard(board);
+        return "redirect:/boardView?boardNo="+board.getBoardNo();
+    }
+    
+    // 글 삭제 폼 요청(비밀번호 입력 폼)
+    @RequestMapping(value="/boardRemove", method = RequestMethod.GET)
+    public String boardRemove(@RequestParam(value="boardNo", required=true) int boardNo) {
+        return "boardRemove";
+    }
+    // 글 삭제 요청
+    @RequestMapping(value="/boardRemove", method = RequestMethod.POST)
+    public String boardRemove(@RequestParam(value="boardNo", required=true) int boardNo
+                            , @RequestParam(value="boardPw", required=true) String boardPw) {
+        boardDao.deleteBoard(boardNo, boardPw);
+        return "redirect:/boardList";
+    }
+    
+
 }
