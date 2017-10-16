@@ -1,4 +1,4 @@
-package cafe.jjdev.web;
+package cafe.jjdev.web.service;
 public class Board { 
     private int boardNo;
     private String boardPw;

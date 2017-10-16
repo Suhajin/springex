@@ -10,15 +10,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result column="member_name" property="memberName"/>
 	</resultMap>
 	
-	<select id="login" resultMap="resultMember" parameterType="cafe.jjdev.web.service.Member">
-	SELECT member_no, member_id, member_name FROM member
-	WHERE member_id=#{memberId} AND member_pw=#{memberPw}
+	<select id="login" resultMap="resultMember" 
+			parameterType="cafe.jjdev.web.service.Member">
+		SELECT member_no, member_id, member_name FROM member
+		WHERE member_id=#{memberId} AND member_pw=#{memberPw}
 	</select>
 	
-	
-	
 	<select id="selectMemberList" resultMap="resultMember">
-	SELECT member_no, member_id, member_name FROM member 
+		SELECT member_no, member_id, member_name FROM member
 	</select>
 	
 	<insert id="insertMember" parameterType="cafe.jjdev.web.service.Member">

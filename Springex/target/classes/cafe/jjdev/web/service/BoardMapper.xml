@@ -28,7 +28,7 @@
         WHERE board_no=#{boardNo}
     </select>
     
-    <select id="getBoardList" parameterType="java.util.Map" resultType="cafe.jjdev.board.service.Board">
+    <select id="getBoardList" parameterType="java.util.Map" resultType="cafe.jjdev.web.service.Board">
         SELECT 
             board_no AS boardNo
             , board_title AS boardTitle
@@ -43,7 +43,7 @@
         SELECT COUNT(*) FROM board
     </select>
     
-    <insert id="insertBoard" parameterType="cafe.jjdev.board.service.Board">
+    <insert id="insertBoard" parameterType="cafe.jjdev.web.service.Board">
         INSERT INTO board(
             board_pw
             , board_title
